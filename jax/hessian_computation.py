@@ -17,9 +17,9 @@
 
 from jax import jacfwd
 from jax import jacrev
-from jax.api import grad
-from jax.api import jit
-from jax.api import jvp
+from jax import grad
+from jax import jit
+from jax import jvp
 from jax.flatten_util import ravel_pytree
 import jax.numpy as np
 import jax.tree_util as tu
@@ -84,7 +84,8 @@ def _tree_sum(tree_left, tree_right):
   """Computes tree_left + tree_right."""
   def f(x, y):
     return x + y
-  return tu.tree_multimap(f, tree_left, tree_right)
+  # return tu.tree_multimap(f, tree_left, tree_right)
+  return tu.tree_map(f, tree_left, tree_right)
 
 
 def _tree_zeros_like(tree):
@@ -112,11 +113,11 @@ def get_hvp_fn(loss, params, batches):
       Assumes the loss computes a sum over all data points. If the loss computes
       the mean, results may be slightly off in cases where batch sizes are not
       uniform.
-    params: params of the model, these will be flatten and concatentated into a
+    params: params of the model, these will be flatten and concatenated into a
       single vector. Any pytree is valid
     batches: A generator yielding batches to be fed into loss. Must support the
       API "for b in batches(): ". batches() must yield a single epoch of data,
-      it should also yield the same epoch of data everytime it is called.
+      it should also yield the same epoch of data every time it is called.
 
   Returns:
     hvp: A function mapping (params, v) -> Hv. H is the Hessian of the loss
@@ -124,7 +125,7 @@ def get_hvp_fn(loss, params, batches):
       matrix). v will be a flat vector of shape [num_params]. params will be
       the PyTree containing the model parameters (so calling ravel_pytree on
       parameters). The function signature is hvp(params, v).
-    unravel: Maps v back to the form reprented as params.
+    unravel: Maps v back to the form represented as params.
     num_params: Total number of parameters in params (int).
   """
 

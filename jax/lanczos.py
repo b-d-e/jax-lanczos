@@ -51,7 +51,10 @@ def lanczos_alg(matrix_vector_product, dim, order, rng_key):
 
   init_vec = random.normal(rng_key, shape=(dim,))
   init_vec = init_vec / np.linalg.norm(init_vec)
-  vecs = ops.index_update(vecs, 0, init_vec)
+
+  # vecs = ops.index_update(vecs, 0, init_vec)
+  vecs = vecs.at[0].set(init_vec)
+
 
   beta = 0
   # TODO(gilmer): Better to use lax.fori loop for faster compile?
@@ -68,7 +71,9 @@ def lanczos_alg(matrix_vector_product, dim, order, rng_key):
     w = w - beta * v_old
 
     alpha = np.dot(w, v)
-    tridiag = ops.index_update(tridiag, (i, i), alpha)
+    # tridiag = ops.index_update(tridiag, (i, i), alpha)
+    tridiag = tridiag.at[i, i].set(alpha)
+
     w = w - alpha * v
 
     # Full Reorthogonalization
@@ -86,7 +91,10 @@ def lanczos_alg(matrix_vector_product, dim, order, rng_key):
     # dependent.
 
     if i + 1 < order:
-      tridiag = ops.index_update(tridiag, (i, i+1), beta)
-      tridiag = ops.index_update(tridiag, (i+1, i), beta)
-      vecs = ops.index_update(vecs, i+1, w/beta)
+      # tridiag = ops.index_update(tridiag, (i, i+1), beta)
+      tridiag = tridiag.at[i, i+1].set(beta)
+      # tridiag = ops.index_update(tridiag, (i+1, i), beta)
+      tridiag = tridiag.at[i+1, i].set(beta)
+      # vecs = ops.index_update(vecs, i+1, w/beta)
+      vecs = vecs.at[i+1].set(w/beta)
   return (tridiag, vecs)

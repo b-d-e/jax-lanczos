@@ -1,0 +1,9 @@
+jax
+optax
+flax
+numpy
+tensorflow
+tensorflow_datasets
+matplotlib
+seaborn
+ipykernel

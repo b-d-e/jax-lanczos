@@ -1,6 +1,6 @@
 # Large Scale Spectral Density Estimation for Deep Neural Networks
 
-> Fork of [Google's archived spectral density repository](https://github.com/google/spectral-density)
+> Fork of [Google's archived spectral density repository](https://github.com/google/spectral-density), which had a bunch of outdated requirements and was incomptable with newer Jax APIs
 
 This repository contains two implementations of the stochastic Lanczos Quadrature algorithm for deep neural networks as used and described in [Ghorbani, Krishnan and Xiao, _An Investigation into Neural Net Optimization via Hessian Eigenvalue Density_ (ICML 2019)](https://arxiv.org/abs/1901.10159).
 
